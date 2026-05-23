@@ -1,49 +1,66 @@
-#include <stdio.h>
-#include <sys/stat.h>
-#include "utils.h"
+#include <stdio.h> 
+#include <sys/stat.h> 
+#include "utils.h" 
 
-int is_text_file(const char *filename)
-{
-    FILE *fp = fopen(filename, "r");
+// Dosyanın sadece ASCII (metin) karakterler içerip içermediğini kontrol eder
+int is_text_file(const char *filename) 
+{ 
+    // Dosyayı okuma modunda aç
+    FILE *fp = fopen(filename, "r"); 
 
-    if (!fp)
-        return 0;
+    // Dosya açılamadıysa metin dosyası değildir
+    if (!fp) 
+        return 0; 
 
-    int c;
+    int c; 
 
-    while ((c = fgetc(fp)) != EOF)
-    {
-        if (c > 127)
-        {
-            fclose(fp);
-            return 0;
-        }
-    }
+    // Dosyayı karakter karakter oku
+    while ((c = fgetc(fp)) != EOF) 
+    { 
+        // ASCII dışı (extended char) varsa metin dosyası değildir
+        if (c > 127) 
+        { 
+            fclose(fp); 
+            return 0; 
+        } 
+    } 
 
-    fclose(fp);
-    return 1;
-}
+    // Dosya başarılı şekilde kontrol edildi
+    fclose(fp); 
+    return 1; 
+} 
 
-long get_file_size(const char *filename)
-{
-    FILE *fp = fopen(filename, "r");
+// Dosyanın byte cinsinden boyutunu döndürür
+long get_file_size(const char *filename) 
+{ 
+    // Dosyayı aç
+    FILE *fp = fopen(filename, "r"); 
 
-    if (!fp)
-        return -1;
+    // Dosya açılamadıysa hata döndür
+    if (!fp) 
+        return -1; 
 
-    fseek(fp, 0, SEEK_END);
-    long size = ftell(fp);
+    // Dosya sonuna git
+    fseek(fp, 0, SEEK_END); 
 
-    fclose(fp);
+    // Dosya konumunu al (boyut)
+    long size = ftell(fp); 
 
-    return size;
-}
+    // Dosyayı kapat
+    fclose(fp); 
 
-mode_t get_permissions(const char *filename)
-{
-    struct stat st;
+    // Dosya boyutunu döndür
+    return size; 
+} 
 
-    stat(filename, &st);
+// Dosyanın izinlerini (chmod permission) döndürür
+mode_t get_permissions(const char *filename) 
+{ 
+    struct stat st; 
 
-    return st.st_mode & 0777;
+    // Dosya bilgilerini al (stat system call)
+    stat(filename, &st); 
+
+    // Sadece permission bitlerini (rwx) döndür
+    return st.st_mode & 0777; 
 }
