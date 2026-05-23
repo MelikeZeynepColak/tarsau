@@ -1,8 +1,7 @@
-CC=gcc
-CFLAGS=-Wall
+CC = gcc
+CFLAGS = -Wall -Iinclude
 
-all:
-	$(CC) main.c archive.c extract.c utils.c -o tarsau $(CFLAGS)
+SRC = $(wildcard src/*.c)
 
-clean:
-	rm -f tarsau
+tarsau:
+	$(CC) $(CFLAGS) $(SRC) -o tarsau
